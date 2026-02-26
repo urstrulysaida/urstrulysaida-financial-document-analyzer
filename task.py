@@ -1,6 +1,6 @@
 from crewai import Task
 from agents import financial_analyst
-from tools import FinancialDocumentTool
+from tools import read_data_tool
 
 analyze_financial_document = Task(
     description="""
@@ -26,6 +26,6 @@ analyze_financial_document = Task(
     """,
 
     agent=financial_analyst,
-    tools=[FinancialDocumentTool.read_data_tool],
+    tools=[read_data_tool],
     async_execution=False,
 )
