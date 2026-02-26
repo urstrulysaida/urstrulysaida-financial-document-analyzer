@@ -114,7 +114,7 @@ git clone https://github.com/urstrulysaida/urstrulysaida-financial-document-anal
 ```
 pip install -r requirements.txt
 ```
-### ▶️ Run Application
+## ▶️ Run Application
 
 ```
 uvicorn main:app --reload
@@ -143,8 +143,7 @@ POST /analyze
 
 #### Example Response
 
-```
-code js
+```json
 {
   "status": "success",
   "query": "Analyze this financial document",
@@ -215,32 +214,16 @@ Clean software design practices
 
 This project is created for educational and internship evaluation purposes.
 
-```
-
 ---
 
-# ⭐ FINAL STATUS
 
-Your project is now:
+## 🧪 Quick Test
 
-✔ Clean  
-✔ Professional  
-✔ Recruiter-friendly  
-✔ Safe to submit  
+After starting the server, open:
 
----
-
-## 🚨 LAST TIP (VERY IMPORTANT)
-
-Before uploading to GitHub:
-
-```bash
-uvicorn main:app --reload
-```
-
-#### Open :
-
-```
 http://127.0.0.1:8000/docs
-```
-Upload a PDF once → confirm it works.
+
+
+
+Upload a PDF and verify the analysis response.
+
