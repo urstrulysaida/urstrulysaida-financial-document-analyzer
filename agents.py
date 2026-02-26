@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from crewai import Agent, LLM
-from tools import FinancialDocumentTool
+from tools import read_data_tool
 
 # ----- LLM -----
 llm = LLM(
@@ -26,17 +26,14 @@ financial_analyst = Agent(
     You are an experienced financial analyst focused on factual,
     evidence-based analysis and clear explanations.
     """,
-    tools=[FinancialDocumentTool.read_data_tool],
+    tools=[read_data_tool],
     llm=llm,
     allow_delegation=False
 )
 
 verifier = Agent(
     role="Financial Document Verifier",
-    goal="""
-    Verify whether the uploaded file is a valid financial document.
-    Reject unrelated files.
-    """,
+    goal="Verify whether uploaded file is a valid financial document.",
     verbose=True,
     memory=True,
     llm=llm,
@@ -45,10 +42,7 @@ verifier = Agent(
 
 risk_assessor = Agent(
     role="Risk Assessment Specialist",
-    goal="""
-    Identify realistic financial risks based on document data.
-    Avoid exaggeration or speculation.
-    """,
+    goal="Identify realistic financial risks based on document data.",
     verbose=True,
     memory=True,
     llm=llm,
