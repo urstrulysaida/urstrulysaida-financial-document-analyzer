@@ -2,120 +2,102 @@
 
 ## 📌 Project Overview
 
-This project is an AI-powered **Financial Document Analysis System** built using **CrewAI**, **FastAPI**, and multi-agent orchestration.
+This project is an AI-powered **Financial Document Analysis System** built using **CrewAI** and **FastAPI**.
 
-The system accepts uploaded financial PDF documents and performs:
+The system allows users to upload financial PDF documents and performs:
 
 - Financial metric extraction
-- Risk assessment
-- Investment insight generation
+- Financial health summarization
+- Risk analysis
+- Neutral investment insights
 - Structured analysis reporting
 
-This project was developed as part of an **AI Internship Debug Assignment**, where the original codebase contained deterministic bugs and inefficient prompts that required debugging and optimization.
+This project was developed as part of an **AI Internship Debug Assignment**, where the original codebase contained deterministic bugs and inefficient prompts that were identified and fixed.
 
 ---
 
 ## 🧠 Key Features
 
-### ✔ Multi-Agent AI Architecture
+### ✔ AI Agent Architecture
 
-The system uses specialized AI agents:
+The system uses specialized CrewAI agents:
 
 | Agent | Responsibility |
 |---|---|
-| Financial Document Verifier | Validates uploaded documents |
-| Financial Analyst | Extracts financial insights |
-| Risk Assessor | Identifies realistic risks |
-| Investment Insights Agent | Provides neutral insights |
+| Financial Analyst | Extracts financial insights from documents |
+| Document Verifier | Validates financial document relevance |
+| Risk Assessor | Identifies realistic financial risks |
 
 ---
 
 ### ✔ FastAPI Backend
 
 - Upload financial PDFs
-- Send analysis query
-- Receive structured AI response
+- Submit analysis query
+- Receive structured AI-generated analysis
 
 ---
 
 ### ✔ CrewAI Orchestration
 
-- Sequential / hierarchical task execution
-- Agent collaboration
-- Tool integration
-
----
-
-### ✔ Queue Worker Model (Bonus)
-
-- Celery + Redis support
-- Concurrent request handling
-- Scalable architecture
-
----
-
-### ✔ Database Integration (Bonus)
-
-- SQLite storage
-- Saves:
-  - filename
-  - query
-  - analysis result
+- Task-based agent execution
+- Tool integration (PDF reader)
+- Structured output generation
 
 ---
 
 ## 🏗️ System Architecture
-
+```
 Client
 ↓
 FastAPI API
 ↓
-Queue Worker (Celery)
-↓
 CrewAI Orchestrator
 ↓
-Specialized Agents
+AI Agents
 ↓
-Database Storage (SQLite)
-
+PDF Processing Tool
+↓
+Structured Analysis Output
+```
 
 ---
 
 ## 🐛 Bugs Found & Fixes
 
-### 1. Undefined LLM
-**Issue:** LLM object was not initialized.  
-**Fix:** Added CrewAI LLM configuration.
+### 1️⃣ Undefined LLM Initialization
+**Issue:** LLM object was not defined.  
+**Fix:** Added proper CrewAI LLM initialization.
 
 ---
 
-### 2. Incorrect Agent Parameter
+### 2️⃣ Incorrect Agent Parameter
 **Issue:** `tool=` used instead of `tools=`.  
 **Fix:** Updated to correct CrewAI syntax.
 
 ---
 
-### 3. Missing PDF Loader
-**Issue:** PDF reader not imported.  
-**Fix:** Added `PyPDFLoader` for reliable PDF extraction.
+### 3️⃣ Missing PDF Loader
+**Issue:** PDF loader was not imported.  
+**Fix:** Added `PyPDFLoader` for reliable PDF parsing.
 
 ---
 
-### 4. Async Tool Misconfiguration
-**Issue:** Async functions incompatible with CrewAI tools.  
+### 4️⃣ Async Tool Misconfiguration
+**Issue:** Async tool incompatible with CrewAI execution.  
 **Fix:** Converted tools to synchronous functions.
 
 ---
 
-### 5. File Path Not Passed
-**Issue:** Uploaded file path ignored during analysis.  
+### 5️⃣ File Path Not Passed
+**Issue:** Uploaded file path was ignored during analysis.  
 **Fix:** Passed `file_path` into Crew kickoff context.
 
 ---
 
-### 6. Unsafe / Inefficient Prompts
-**Issue:** Prompts encouraged hallucinations and fake outputs.  
-**Fix:** Rewritten prompts to enforce factual analysis.
+### 6️⃣ Inefficient / Unsafe Prompts
+**Issue:** Prompts encouraged hallucinated outputs.  
+**Fix:** Rewritten prompts to enforce factual, document-based analysis.
 
 ---
 
@@ -124,29 +106,34 @@ Database Storage (SQLite)
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/financial-document-analyzer.git
-cd financial-document-analyzer
+git clone https://github.com/urstrulysaida/urstrulysaida-financial-document-analyzer.git
 ```
 
+## 2️⃣ Install Dependencies
 
-2️⃣ Install Dependencies
-
+```
 pip install -r requirements.txt
+```
+### ▶️ Run Application
 
-▶️ Run Application
-
+```
 uvicorn main:app --reload
+```
+#### API will start at:
 
-API will start at:
-
+```
 http://127.0.0.1:8000
+```
 
-📡 API Documentation
+## 📡 API Documentation
 
+FastAPI automatically generates interactive docs:
+
+```
 http://127.0.0.1:8000/docs
+```
 
-📂 API Endpoint
-
+## 📂 API Endpoint
 POST /analyze
 
 | Field | Type   | Description        |
@@ -154,11 +141,10 @@ POST /analyze
 | file  | PDF    | Financial document |
 | query | string | Analysis request   |
 
+#### Example Response
 
-Example Response
 ```
-code Js 
-
+code js
 {
   "status": "success",
   "query": "Analyze this financial document",
@@ -166,6 +152,7 @@ code Js
   "file_processed": "report.pdf"
 }
 ```
+
 ### 🧩 Tech Stack
 
 Python
@@ -176,43 +163,84 @@ CrewAI
 
 LangChain
 
-Celery
-
-Redis
-
-SQLite
-
 PyPDF
 
-###  🧪 Future Improvements
+Pandas
 
-Agent memory sharing
+NumPy
+
+### 📁 Project Structure
+```
+financial-document-analyzer/
+│
+├── agents.py
+├── main.py
+├── task.py
+├── tools.py
+├── requirements.txt
+├── README.md
+│
+└── data/
+    ├── sample.pdf
+    └── .gitkeep
+```
+
+### 🧪 Future Improvements
+
+Multi-agent parallel execution
 
 Structured JSON outputs
 
-Financial metric auto-tables
+Database storage for analysis history
 
-Streaming responses
+Queue-based async processing
 
 Cloud deployment
 
-###  👨‍💻 Assignment Goal
+### 👨‍💻 Assignment Goal
 
 This project demonstrates:
 
-Debugging skills
+Debugging and bug fixing
 
-Prompt engineering optimization
+Prompt engineering improvements
 
-Multi-agent AI system design
+AI agent orchestration
 
 Backend API development
 
-Scalable architecture thinking
+Clean software design practices
 
+### 📄 License
 
+This project is created for educational and internship evaluation purposes.
 
+```
 
+---
 
+# ⭐ FINAL STATUS
 
+Your project is now:
 
+✔ Clean  
+✔ Professional  
+✔ Recruiter-friendly  
+✔ Safe to submit  
+
+---
+
+## 🚨 LAST TIP (VERY IMPORTANT)
+
+Before uploading to GitHub:
+
+```bash
+uvicorn main:app --reload
+```
+
+#### Open :
+
+```
+http://127.0.0.1:8000/docs
+```
+Upload a PDF once → confirm it works.
