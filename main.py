@@ -1,56 +1,69 @@
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 import os
-from dotenv import load_dotenv
-load_dotenv()
+import uuid
 
-from crewai import Agent, LLM
-from tools import FinancialDocumentTool
+from crewai import Crew, Process
+from agents import financial_analyst
+from task import analyze_financial_document
 
-# ----- LLM -----
-llm = LLM(
-    model="gpt-4o-mini",
-    temperature=0.2
-)
+app = FastAPI(title="Financial Document Analyzer")
 
-# ----- Agents -----
 
-financial_analyst = Agent(
-    role="Senior Financial Analyst",
-    goal="""
-    Analyze financial documents accurately using provided data.
-    Never invent facts.
-    Base analysis only on document content.
-    """,
-    verbose=True,
-    memory=True,
-    backstory="""
-    You are an experienced financial analyst focused on factual,
-    evidence-based analysis and clear explanations.
-    """,
-    tools=[FinancialDocumentTool.read_data_tool],
-    llm=llm,
-    allow_delegation=False
-)
+def run_crew(query: str, file_path: str):
+    financial_crew = Crew(
+        agents=[financial_analyst],
+        tasks=[analyze_financial_document],
+        process=Process.sequential,
+    )
 
-verifier = Agent(
-    role="Financial Document Verifier",
-    goal="""
-    Verify whether the uploaded file is a valid financial document.
-    Reject unrelated files.
-    """,
-    verbose=True,
-    memory=True,
-    llm=llm,
-    allow_delegation=False
-)
+    result = financial_crew.kickoff({
+        "query": query,
+        "file_path": file_path
+    })
 
-risk_assessor = Agent(
-    role="Risk Assessment Specialist",
-    goal="""
-    Identify realistic financial risks based on document data.
-    Avoid exaggeration or speculation.
-    """,
-    verbose=True,
-    memory=True,
-    llm=llm,
-    allow_delegation=False
-)
+    return result
+
+
+@app.get("/")
+async def root():
+    return {"message": "Financial Document Analyzer API running"}
+
+
+@app.post("/analyze")
+async def analyze(
+    file: UploadFile = File(...),
+    query: str = Form(default="Analyze this financial document")
+):
+
+    file_id = str(uuid.uuid4())
+    file_path = f"data/{file_id}.pdf"
+
+    try:
+        os.makedirs("data", exist_ok=True)
+
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+
+        if not query.strip():
+            query = "Analyze this financial document"
+
+        response = run_crew(query, file_path)
+
+        return {
+            "status": "success",
+            "query": query,
+            "analysis": str(response),
+            "file_processed": file.filename
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
