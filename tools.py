@@ -20,7 +20,7 @@ def read_data_tool(path: str) -> str:
     for page in docs:
         content = page.page_content
 
- * Replace double line breaks
+        # Replace double line breaks
         while "\n\n" in content:
             content = content.replace("\n\n", "\n")
 
